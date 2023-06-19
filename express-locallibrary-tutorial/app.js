@@ -3,12 +3,22 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 const app = express();
 
+const dev_db_url =
+  "mongodb+srv://antoinephilippe:6li1GvDEEkmtx2kF@cluster0.qfwgsgd.mongodb.net/";
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
+
+main().catch((err) => console.log(err));
+async function main() {
+  await mongoose.connect(mongoDB);
+}
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -24,7 +34,7 @@ app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  next(createError(400));
 });
 
 // error handler
